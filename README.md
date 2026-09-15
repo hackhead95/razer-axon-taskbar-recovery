@@ -45,7 +45,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-AxonTasks.ps1 R
 After removal, restore any previous tasks you deliberately disabled. Remove the downloaded folder when no worker is running. Razer Axon and its startup entry remain installed.
 
 ## What works
-The user confirmed these results with the original installed recovery on one Windows 11 setup using Axon 2.10.1, TranslucentTB and a single display:
+I confirmed these results on my Windows 11 setup with Axon 2.10.1, TranslucentTB and a single display:
 
 | Scenario | Result |
 | --- | --- |
@@ -54,18 +54,18 @@ The user confirmed these results with the original installed recovery on one Win
 | Restart and sign in | Wallpaper recovers correctly through the logon task |
 | Shutdown, power on and sign in | Wallpaper recovers correctly through the logon task |
 
-These are user-observed results, not a guarantee for every PC. Power-loss recovery and every Fast Startup/boot variant were not separately verified.
+These results reflect what I observed on my setup; they do not guarantee the same outcome on every PC. I have not verified recovery after power loss or every Fast Startup/boot variant.
 
 ## Screensaver issues: not resolved
 - **Axon's automatic screensaver:** repeatedly displayed a black screen, sometimes with a lighter bottom strip. Preview could display the wallpaper, so a working preview did not prove automatic activation worked. Refreshing the assignment, repairing Axon, and testing Media Foundation and WebView2 did not resolve it.
-- **Windows Photos workaround:** the miniature preview cycled local images, but automatic activation did not work reliably in our tests. Changing screensaver settings or running tests also sometimes left the desktop wallpaper missing or clipped, requiring recovery. The exact cause was not established.
-- **Final choice:** screensaver set to **None**, with desktop wallpaper recovery retained. This project does not fix, enable or configure screensavers. Do not install it expecting to solve a black screensaver.
+- **Windows Photos workaround:** the miniature preview cycled local images, but automatic activation did not work reliably during testing on my setup. Changing screensaver settings or running tests also sometimes left the desktop wallpaper missing or clipped, requiring recovery. I still do not know the exact cause.
+- **My choice:** I set the screensaver to **None** and kept desktop wallpaper recovery enabled. This project does not fix, enable or configure screensavers. Do not install it expecting to solve a black screensaver.
 
 ## Limits and troubleshooting
-- The portable installer has XML/parse validation, not a fresh-machine installation test. Other Axon versions, monitor layouts and renderer types need testing.
-- Local recovery took roughly 8–13 seconds. Waits are bounded; locked/off/idle or borderless-fullscreen sessions defer recovery. Resume may defer and unlock then complete it.
+- The portable installer passed XML and PowerShell parsing checks. I have not tested installation on a fresh PC or compatibility with other Axon versions, monitor layouts and renderer types.
+- Local recovery took roughly 8–13 seconds. The worker limits its waits and defers recovery while the session is locked, the display is off, the user is idle, or a borderless-fullscreen app is active. Resume may defer and unlock then complete it.
 - No Explorer restart, force-kill, permanent polling service, binary taskbar-registry patch or dependence on a shutdown hook. Ordinary failures attempt to restore taskbar visibility; process termination/power loss can prevent cleanup until the next eligible event.
-- Axon renderer names and its navigation log format are version-dependent. Intentional Axon exit/pause is respected conservatively. Multiple active Axon players are not supported.
+- Axon renderer names and its navigation log format are version-dependent. The worker conservatively respects intentional Axon exit/pause and does not support multiple active Axon players.
 - Local diagnostics: `%LOCALAPPDATA%\AxonWallpaperRecovery\recovery.jsonl` (bounded with one rotated file). Logs contain local process/session details; review and redact before sharing.
 
 Regression checks (no task installation or wallpaper restart):
@@ -78,5 +78,5 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-AxonTasks.ps1 V
 ## References
 [Windows taskbar state API](https://learn.microsoft.com/en-us/windows/win32/shell/abm-setstate) · [Session-state triggers](https://learn.microsoft.com/en-us/windows/win32/taskschd/sessionstatechangetrigger) · [Task security contexts](https://learn.microsoft.com/en-us/windows/win32/taskschd/security-contexts-for-running-tasks)
 
-Only source and documentation are included. No wallpaper assets, personal configuration, machine identifiers, logs or original-PC backups are distributed.
+I publish only the source and documentation. I exclude wallpaper assets, personal configuration, machine identifiers, logs and backups.
 
