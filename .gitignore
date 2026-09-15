@@ -1,0 +1,7 @@
+config.json
+Backups/
+Diagnostics/
+*.log
+*.jsonl
+*-state.json
+*.zip
