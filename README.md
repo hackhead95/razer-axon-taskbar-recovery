@@ -26,8 +26,8 @@ Requires Windows 11, Windows PowerShell 5.1, and Axon installed at its standard 
    powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-AxonTasks.ps1 Install
    ```
 
-   Tasks run on logon, unlock and resume, with limited privileges. Installation may require elevation under local policy; if so, elevate as the **same account**. Keep this folder in place. A local `config.json` binds the worker to that account; do not publish it.
-5. Save your work, test sleep/wake and lock/unlock, then check the wallpaper visually. Use `Manage-AxonTasks.ps1 Status` through the same PowerShell command to inspect task status.
+   Tasks run on logon, unlock and resume, with limited privileges. The logon task covers signing in after a restart or shutdown/power-on; no pre-shutdown task needs to run. Installation may require elevation under local policy; if so, elevate as the **same account**. Keep this folder in place. A local `config.json` binds the worker to that account; do not publish it.
+5. Save your work, test sleep/wake, lock/unlock and signing in after restart or shutdown/power-on, then check the wallpaper visually. Use `Manage-AxonTasks.ps1 Status` through the same PowerShell command to inspect task status.
 
 `-ExecutionPolicy Bypass` applies only to that PowerShell process; it does not change the machine's execution policy.
 
@@ -44,12 +44,28 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Manage-AxonTasks.ps1 R
 
 After removal, restore any previous tasks you deliberately disabled. Remove the downloaded folder when no worker is running. Razer Axon and its startup entry remain installed.
 
+## What works
+The user confirmed these results with the original installed recovery on one Windows 11 setup using Axon 2.10.1, TranslucentTB and a single display:
+
+| Scenario | Result |
+| --- | --- |
+| Sleep, wake and sign in | Wallpaper recovers correctly |
+| Lock and unlock with PIN/password | Wallpaper recovers correctly |
+| Restart and sign in | Wallpaper recovers correctly through the logon task |
+| Shutdown, power on and sign in | Wallpaper recovers correctly through the logon task |
+
+These are user-observed results, not a guarantee for every PC. Power-loss recovery and every Fast Startup/boot variant were not separately verified.
+
+## Screensaver issues: not resolved
+- **Axon's automatic screensaver:** repeatedly displayed a black screen, sometimes with a lighter bottom strip. Preview could display the wallpaper, so a working preview did not prove automatic activation worked. Refreshing the assignment, repairing Axon, and testing Media Foundation and WebView2 did not resolve it.
+- **Windows Photos workaround:** the miniature preview cycled local images, but automatic activation did not work reliably in our tests. Changing screensaver settings or running tests also sometimes left the desktop wallpaper missing or clipped, requiring recovery. The exact cause was not established.
+- **Final choice:** screensaver set to **None**, with desktop wallpaper recovery retained. This project does not fix, enable or configure screensavers. Do not install it expecting to solve a black screensaver.
+
 ## Limits and troubleshooting
-- Validated on one Windows 11 setup with Axon 2.10.1, TranslucentTB and a single display. The original recovery passed user-observed sleep/wake and unlock checks; the portable installer has XML/parse validation, not a fresh-machine installation test. Other versions, monitor layouts and renderer types need testing.
+- The portable installer has XML/parse validation, not a fresh-machine installation test. Other Axon versions, monitor layouts and renderer types need testing.
 - Local recovery took roughly 8–13 seconds. Waits are bounded; locked/off/idle or borderless-fullscreen sessions defer recovery. Resume may defer and unlock then complete it.
 - No Explorer restart, force-kill, permanent polling service, binary taskbar-registry patch or dependence on a shutdown hook. Ordinary failures attempt to restore taskbar visibility; process termination/power loss can prevent cleanup until the next eligible event.
 - Axon renderer names and its navigation log format are version-dependent. Intentional Axon exit/pause is respected conservatively. Multiple active Axon players are not supported.
-- Screensaver repair is out of scope. This project neither enables nor configures one.
 - Local diagnostics: `%LOCALAPPDATA%\AxonWallpaperRecovery\recovery.jsonl` (bounded with one rotated file). Logs contain local process/session details; review and redact before sharing.
 
 Regression checks (no task installation or wallpaper restart):
